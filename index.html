@@ -1,79 +1,895 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>My webPage.</title>
-    <style>
-      body {
-        background-color: chocolate;
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Low Tide — you're not done yet</title>
+<meta name="description" content="A quiet place for developers who are about to give up. The tide always turns.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --deep-navy:#0B2530;
+    --tide-teal:#1F6F78;
+    --sea-glass:#8FD6C7;
+    --sand:#F2E8D5;
+    --coral:#E8734A;
+    --foam:#FBFAF6;
+    --ink:#0B2530;
+    --serif:'Fraunces', serif;
+    --sans:'Manrope', sans-serif;
+    --mono:'JetBrains Mono', monospace;
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:var(--sans);
+    color:var(--ink);
+    background:var(--foam);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+  button{font-family:inherit;cursor:pointer;}
+
+  ::selection{background:var(--coral);color:var(--foam);}
+
+  /* ---------- utility ---------- */
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--tide-teal);
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+  }
+  .eyebrow::before{
+    content:'';
+    width:22px;height:1px;
+    background:var(--tide-teal);
+    display:inline-block;
+  }
+  .wrap{
+    max-width:1120px;
+    margin:0 auto;
+    padding:0 clamp(1.25rem, 5vw, 3rem);
+  }
+
+  /* ---------- reveal animation ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .9s var(--ease), transform .9s var(--ease);
+  }
+  .reveal.is-visible{opacity:1;transform:translateY(0);}
+  .reveal-stagger.is-visible > *{opacity:1;transform:translateY(0);}
+  .reveal-stagger > *{
+    opacity:0;
+    transform:translateY(22px);
+    transition:opacity .7s var(--ease), transform .7s var(--ease);
+  }
+  .reveal-stagger.is-visible > *:nth-child(1){transition-delay:.03s;}
+  .reveal-stagger.is-visible > *:nth-child(2){transition-delay:.13s;}
+  .reveal-stagger.is-visible > *:nth-child(3){transition-delay:.23s;}
+  .reveal-stagger.is-visible > *:nth-child(4){transition-delay:.33s;}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .reveal, .reveal-stagger > *{opacity:1 !important;transform:none !important;transition:none !important;}
+    *{animation-duration:.001s !important; animation-iteration-count:1 !important;}
+  }
+
+  /* ---------- nav ---------- */
+  header.nav{
+    position:fixed;top:0;left:0;right:0;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:1.4rem clamp(1.25rem, 5vw, 3rem);
+    mix-blend-mode:normal;
+    transition:background .4s var(--ease), padding .4s var(--ease), box-shadow .4s var(--ease);
+  }
+  header.nav.scrolled{
+    background:rgba(11,37,48,.82);
+    backdrop-filter:blur(10px);
+    padding:.9rem clamp(1.25rem, 5vw, 3rem);
+    box-shadow:0 8px 30px rgba(0,0,0,.15);
+  }
+  .brand{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:1.25rem;
+    color:var(--foam);
+    letter-spacing:.01em;
+    display:flex;align-items:center;gap:.5rem;
+  }
+  .brand .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--coral);
+    display:inline-block;
+    box-shadow:0 0 0 4px rgba(232,115,74,.25);
+  }
+  .nav-links{
+    display:flex;align-items:center;gap:2rem;
+    font-size:.92rem;
+    color:rgba(251,250,246,.82);
+  }
+  .nav-links a{text-decoration:none;position:relative;}
+  .nav-links a:not(.btn)::after{
+    content:'';position:absolute;left:0;bottom:-4px;width:0;height:1px;
+    background:var(--sea-glass);transition:width .3s var(--ease);
+  }
+  .nav-links a:not(.btn):hover::after{width:100%;}
+  .btn{
+    font-family:var(--mono);
+    font-size:.78rem;
+    letter-spacing:.03em;
+    padding:.6rem 1.15rem;
+    border-radius:100px;
+    border:1px solid rgba(251,250,246,.5);
+    color:var(--foam);
+    background:transparent;
+    text-decoration:none;
+    transition:background .3s var(--ease), color .3s var(--ease), transform .2s var(--ease), border-color .3s var(--ease);
+  }
+  .btn:hover{background:var(--foam);color:var(--deep-navy);transform:translateY(-2px);}
+  .btn.solid{
+    background:var(--coral);
+    border-color:var(--coral);
+    color:var(--foam);
+  }
+  .btn.solid:hover{background:#d8623a;border-color:#d8623a;color:var(--foam);}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    display:flex;
+    align-items:flex-end;
+    color:var(--foam);
+    overflow:hidden;
+  }
+  .hero-bg{
+    position:absolute;inset:0;
+    background-image:url('images/coast.jpg');
+    background-size:cover;
+    background-position:center 62%;
+    transform:scale(1.08);
+    animation:heroIn 2.4s var(--ease) forwards;
+  }
+  @keyframes heroIn{from{transform:scale(1.16);filter:saturate(.85) brightness(.9);}to{transform:scale(1.08);filter:saturate(1) brightness(1);}}
+  .hero-scrim{
+    position:absolute;inset:0;
+    background:
+      linear-gradient(180deg, rgba(11,37,48,.55) 0%, rgba(11,37,48,.12) 32%, rgba(11,37,48,.2) 60%, rgba(11,37,48,.92) 100%);
+  }
+  .hero-content{
+    position:relative;
+    z-index:2;
+    width:100%;
+    padding:0 clamp(1.25rem, 5vw, 3rem) 6.5rem;
+    max-width:1120px;
+    margin:0 auto;
+  }
+  .hero-eyebrow{
+    font-family:var(--mono);
+    font-size:.75rem;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--sea-glass);
+    opacity:0;
+    animation:fadeUp .9s var(--ease) .3s forwards;
+  }
+  .hero h1{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:clamp(2.6rem, 6.4vw, 5.4rem);
+    line-height:1.02;
+    letter-spacing:-.01em;
+    max-width:14ch;
+    margin:.9rem 0 1.4rem;
+    opacity:0;
+    animation:fadeUp 1s var(--ease) .5s forwards;
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--sea-glass);
+  }
+  .hero p{
+    font-size:clamp(1rem,1.6vw,1.2rem);
+    max-width:46ch;
+    color:rgba(251,250,246,.88);
+    opacity:0;
+    animation:fadeUp 1s var(--ease) .7s forwards;
+  }
+  .hero-actions{
+    display:flex;
+    gap:1rem;
+    margin-top:2.2rem;
+    flex-wrap:wrap;
+    opacity:0;
+    animation:fadeUp 1s var(--ease) .9s forwards;
+  }
+  @keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+  .scroll-cue{
+    position:absolute;
+    bottom:2.2rem;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:.5rem;
+    color:rgba(251,250,246,.75);
+    font-family:var(--mono);
+    font-size:.68rem;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    opacity:0;
+    animation:fadeUp 1s var(--ease) 1.3s forwards;
+  }
+  .scroll-cue .line{
+    width:1px;height:34px;
+    background:linear-gradient(180deg, rgba(251,250,246,.9), transparent);
+    animation:tideDrop 1.8s ease-in-out infinite;
+  }
+  @keyframes tideDrop{0%{transform:scaleY(0);transform-origin:top;}50%{transform:scaleY(1);transform-origin:top;}50.1%{transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
+
+  /* ---------- wave divider ---------- */
+  .wave-divider{
+    display:block;
+    width:100%;
+    line-height:0;
+  }
+  .wave-divider svg{width:100%;height:auto;display:block;}
+  .wave-path{
+    animation:waveDrift 14s ease-in-out infinite alternate;
+  }
+  @keyframes waveDrift{
+    0%{ d: path("M0,40 C240,10 480,70 720,40 C960,10 1200,70 1440,40 L1440,100 L0,100 Z"); }
+    100%{ d: path("M0,50 C240,80 480,20 720,50 C960,80 1200,20 1440,50 L1440,100 L0,100 Z"); }
+  }
+
+  /* ---------- section: reckoning ---------- */
+  .reckoning{
+    background:var(--deep-navy);
+    color:var(--foam);
+    padding:1rem 0 6rem;
+  }
+  .reckoning .lede{
+    font-family:var(--serif);
+    font-weight:300;
+    font-style:italic;
+    font-size:clamp(1.5rem, 3.2vw, 2.3rem);
+    line-height:1.4;
+    max-width:26ch;
+    color:var(--sand);
+    margin-top:1.3rem;
+  }
+  .reckoning .lede strong{
+    font-style:normal;
+    font-weight:600;
+    color:var(--sea-glass);
+  }
+  .stat-row{
+    margin-top:3.5rem;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:2rem;
+    border-top:1px solid rgba(251,250,246,.14);
+    padding-top:2.5rem;
+  }
+  .stat-row .stat b{
+    display:block;
+    font-family:var(--serif);
+    font-size:2.4rem;
+    font-weight:500;
+    color:var(--foam);
+  }
+  .stat-row .stat span{
+    font-family:var(--mono);
+    font-size:.78rem;
+    letter-spacing:.04em;
+    color:rgba(251,250,246,.6);
+  }
+
+  /* ---------- section: anchor points (advice) ---------- */
+  .anchors{
+    background:var(--sand);
+    padding:6.5rem 0 7rem;
+  }
+  .section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:2rem;
+    flex-wrap:wrap;
+    margin-bottom:3.2rem;
+  }
+  .section-head h2{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:clamp(2rem,4vw,3rem);
+    letter-spacing:-.01em;
+    margin-top:.7rem;
+    max-width:16ch;
+  }
+  .section-head p{
+    max-width:34ch;
+    color:#3d5158;
+    font-size:.98rem;
+  }
+  .card-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:1.4rem;
+  }
+  .card{
+    background:var(--foam);
+    border:1px solid rgba(11,37,48,.08);
+    border-radius:18px;
+    padding:2rem 1.8rem;
+    position:relative;
+    overflow:hidden;
+    transition:transform .5s var(--ease), box-shadow .5s var(--ease), border-color .5s var(--ease);
+  }
+  .card::before{
+    content:'';
+    position:absolute;
+    top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,var(--tide-teal),var(--sea-glass));
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform .5s var(--ease);
+  }
+  .card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 24px 48px -20px rgba(11,37,48,.25);
+    border-color:transparent;
+  }
+  .card:hover::before{transform:scaleX(1);}
+  .card .mark{
+    font-family:var(--mono);
+    font-size:.72rem;
+    letter-spacing:.08em;
+    color:var(--tide-teal);
+    text-transform:uppercase;
+  }
+  .card h3{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:1.3rem;
+    margin:.7rem 0 .6rem;
+  }
+  .card p{
+    color:#41565d;
+    font-size:.94rem;
+  }
+
+  /* ---------- section: quote ---------- */
+  .tide-quote{
+    background:var(--tide-teal);
+    color:var(--foam);
+    padding:6rem 0;
+    position:relative;
+    overflow:hidden;
+  }
+  .tide-quote::after{
+    content:'';
+    position:absolute;
+    width:600px;height:600px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(143,214,199,.25), transparent 70%);
+    top:-260px;right:-160px;
+    animation:driftBlob 12s ease-in-out infinite alternate;
+  }
+  @keyframes driftBlob{from{transform:translate(0,0);}to{transform:translate(-30px,40px);}}
+  blockquote{
+    font-family:var(--serif);
+    font-style:italic;
+    font-weight:300;
+    font-size:clamp(1.6rem,3.6vw,2.6rem);
+    line-height:1.35;
+    max-width:22ch;
+    position:relative;
+    z-index:1;
+  }
+  blockquote span.hi{color:var(--sea-glass);font-style:normal;font-weight:600;}
+  .tide-quote cite{
+    display:block;
+    margin-top:1.6rem;
+    font-family:var(--mono);
+    font-style:normal;
+    font-size:.8rem;
+    letter-spacing:.05em;
+    color:rgba(251,250,246,.7);
+  }
+
+  /* ---------- section: community / account ---------- */
+  .community{
+    background:var(--deep-navy);
+    color:var(--foam);
+    padding:7rem 0 7rem;
+    position:relative;
+  }
+  .community-grid{
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    gap:4rem;
+    align-items:start;
+  }
+  @media (max-width:860px){.community-grid{grid-template-columns:1fr;}}
+  .community h2{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:clamp(2rem,4vw,2.9rem);
+    margin:.8rem 0 1.1rem;
+    max-width:14ch;
+  }
+  .community p.desc{
+    color:rgba(251,250,246,.75);
+    max-width:42ch;
+    margin-bottom:2rem;
+  }
+  .perk-list{list-style:none;display:flex;flex-direction:column;gap:.9rem;}
+  .perk-list li{
+    display:flex;
+    gap:.8rem;
+    align-items:flex-start;
+    font-size:.94rem;
+    color:rgba(251,250,246,.85);
+  }
+  .perk-list li .ico{
+    flex:none;
+    width:20px;height:20px;
+    border-radius:50%;
+    border:1px solid var(--sea-glass);
+    display:flex;align-items:center;justify-content:center;
+    margin-top:.15rem;
+  }
+  .perk-list li .ico svg{width:10px;height:10px;}
+
+  /* auth card */
+  .auth-card{
+    background:var(--foam);
+    color:var(--ink);
+    border-radius:20px;
+    padding:2.2rem 2.2rem 2.4rem;
+    box-shadow:0 40px 80px -30px rgba(0,0,0,.5);
+  }
+  .auth-tabs{
+    display:flex;
+    background:var(--sand);
+    border-radius:100px;
+    padding:.3rem;
+    margin-bottom:1.6rem;
+  }
+  .auth-tabs button{
+    flex:1;
+    border:none;
+    background:transparent;
+    padding:.65rem 0;
+    border-radius:100px;
+    font-size:.86rem;
+    font-weight:600;
+    color:#5c6f75;
+    transition:background .35s var(--ease), color .35s var(--ease), box-shadow .35s var(--ease);
+  }
+  .auth-tabs button.active{
+    background:var(--deep-navy);
+    color:var(--foam);
+    box-shadow:0 8px 20px rgba(11,37,48,.35);
+  }
+  .field{margin-bottom:1.05rem;}
+  .field label{
+    display:block;
+    font-family:var(--mono);
+    font-size:.7rem;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:#5c6f75;
+    margin-bottom:.4rem;
+  }
+  .field input{
+    width:100%;
+    padding:.75rem .9rem;
+    border-radius:10px;
+    border:1.5px solid #e2d9c4;
+    background:var(--sand);
+    font-family:var(--sans);
+    font-size:.95rem;
+    color:var(--ink);
+    outline:none;
+    transition:border-color .3s var(--ease), background .3s var(--ease), transform .2s var(--ease);
+  }
+  .field input:focus{
+    border-color:var(--tide-teal);
+    background:var(--foam);
+  }
+  .auth-submit{
+    width:100%;
+    margin-top:.4rem;
+    padding:.85rem 0;
+    border:none;
+    border-radius:10px;
+    background:var(--coral);
+    color:var(--foam);
+    font-weight:700;
+    font-size:.95rem;
+    transition:background .3s var(--ease), transform .2s var(--ease);
+  }
+  .auth-submit:hover{background:#d8623a;transform:translateY(-2px);}
+  .auth-submit:active{transform:translateY(0);}
+  .auth-note{
+    font-size:.78rem;
+    color:#7c8b90;
+    margin-top:.9rem;
+    text-align:center;
+  }
+  .auth-status{
+    margin-top:1rem;
+    padding:.85rem 1rem;
+    border-radius:10px;
+    background:#e9f5f0;
+    border:1px solid #bfe4d6;
+    font-size:.88rem;
+    color:#1f6f4e;
+    display:none;
+    align-items:center;
+    gap:.6rem;
+  }
+  .auth-status.show{display:flex;animation:popIn .5s var(--ease);}
+  .auth-status .badge{
+    font-family:var(--mono);
+    font-size:.62rem;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    background:var(--coral);
+    color:var(--foam);
+    padding:.15rem .5rem;
+    border-radius:100px;
+  }
+  @keyframes popIn{from{opacity:0;transform:scale(.94) translateY(6px);}to{opacity:1;transform:scale(1) translateY(0);}}
+  .field-error{
+    font-size:.76rem;
+    color:var(--coral);
+    margin-top:.35rem;
+    display:none;
+  }
+  .field.error input{border-color:var(--coral);}
+  .field.error .field-error{display:block;}
+
+  /* ---------- footer ---------- */
+  footer{
+    background:#081a21;
+    color:rgba(251,250,246,.65);
+    padding:3.6rem 0 2.2rem;
+  }
+  .footer-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:2rem;
+    flex-wrap:wrap;
+    padding-bottom:2.4rem;
+    border-bottom:1px solid rgba(251,250,246,.1);
+  }
+  .footer-brand{
+    font-family:var(--serif);
+    font-size:1.2rem;
+    color:var(--foam);
+    margin-bottom:.6rem;
+  }
+  .footer-tag{max-width:32ch;font-size:.88rem;}
+  .footer-contact{
+    display:flex;
+    flex-direction:column;
+    gap:.5rem;
+    align-items:flex-start;
+  }
+  .footer-contact a{
+    text-decoration:none;
+    font-family:var(--mono);
+    font-size:.85rem;
+    color:var(--sea-glass);
+    border-bottom:1px solid transparent;
+    transition:border-color .3s var(--ease), color .3s var(--ease);
+  }
+  .footer-contact a:hover{border-color:var(--sea-glass);}
+  .footer-owner{
+    font-size:.76rem;
+    color:rgba(251,250,246,.45);
+  }
+  .footer-bottom{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:.6rem;
+    padding-top:1.6rem;
+    font-size:.76rem;
+    font-family:var(--mono);
+    color:rgba(251,250,246,.4);
+  }
+
+  @media (max-width:640px){
+    .nav-links{gap:1rem;}
+    .nav-links .label{display:none;}
+    .hero-content{padding-bottom:5rem;}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav" id="siteNav">
+  <div class="brand"><span class="dot"></span>Low&nbsp;Tide</div>
+  <nav class="nav-links">
+    <a href="#anchors" class="label">Anchor points</a>
+    <a href="#community" class="label">Community</a>
+    <a href="#community" class="btn">Sign in</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-scrim"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">For the developer who's about to close the laptop for good</div>
+    <h1>The tide always <em>turns.</em></h1>
+    <p>You are not behind. You are not too old, too slow, or too late. You're mid-tide — and mid-tide always feels like drowning right before it feels like standing.</p>
+    <div class="hero-actions">
+      <a href="#anchors" class="btn solid">Read this before you quit</a>
+      <a href="#community" class="btn">Join the low tide crew</a>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>keep scrolling</span><span class="line"></span></div>
+</section>
+
+<div class="wave-divider" style="background:var(--deep-navy)">
+  <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path class="wave-path" fill="#F2E8D5" d="M0,40 C240,10 480,70 720,40 C960,10 1200,70 1440,40 L1440,100 L0,100 Z" style="fill:var(--deep-navy)"/></svg>
+</div>
+
+<section class="reckoning">
+  <div class="wrap reveal">
+    <div class="eyebrow">The part nobody says out loud</div>
+    <p class="lede">Burnout doesn't mean you picked the wrong career. It usually means <strong>you cared before you learned how to rest</strong> — and nobody taught you the difference.</p>
+
+    <div class="stat-row reveal-stagger">
+      <div class="stat"><b>83%</b><span>of developers report burnout at least once in their career</span></div>
+      <div class="stat"><b>3–5</b><span>career "low tides" the average engineer moves through before it clicks</span></div>
+      <div class="stat"><b>0</b><span>bugs fixed by a mind that hasn't slept — write that on a sticky note</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="anchors" id="anchors">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <div class="eyebrow">Anchor points</div>
+        <h2>Things to hold onto when the current gets strong</h2>
+      </div>
+      <p>Not motivational posters. Just the things that are actually true, from people who almost walked away and didn't.</p>
+    </div>
+
+    <div class="card-grid reveal-stagger">
+      <div class="card">
+        <div class="mark">On rest</div>
+        <h3>Rest is not quitting</h3>
+        <p>Stepping away from the keyboard is not the same as stepping away from the craft. Your best debugging happens in the shower, not the sprint.</p>
+      </div>
+      <div class="card">
+        <div class="mark">On comparison</div>
+        <h3>Compare today-you to yesterday-you</h3>
+        <p>Not to the senior engineer three years ahead. Not to the GitHub streak of a stranger. Just to who you were the last time you opened this editor.</p>
+      </div>
+      <div class="card">
+        <div class="mark">On confusion</div>
+        <h3>Confused means learning, not failing</h3>
+        <p>The feeling of "I have no idea what I'm doing" is the exact texture of a brain building new structure. It's supposed to feel like this.</p>
+      </div>
+      <div class="card">
+        <div class="mark">On asking</div>
+        <h3>Asking for help is a senior move</h3>
+        <p>Every engineer you admire has a Slack history full of "dumb questions." The junior move is suffering in silence to protect your ego.</p>
+      </div>
+      <div class="card">
+        <div class="mark">On pace</div>
+        <h3>Slow is a pace, not a verdict</h3>
+        <p>You're allowed to take the scenic route through this field. Nobody's handing out medals for who arrived first — only for who stayed.</p>
+      </div>
+      <div class="card">
+        <div class="mark">On identity</div>
+        <h3>You are not your last error message</h3>
+        <p>A failing build describes your code for a moment. It says nothing at all about whether you belong here.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tide-quote">
+  <div class="wrap reveal">
+    <blockquote>"Every engineer still in this industry has a folder somewhere called <span class="hi">'final_final_v2'</span> and a night they almost deleted it all."</blockquote>
+    <cite>— every senior dev, eventually, over coffee</cite>
+  </div>
+</section>
+
+<section class="community" id="community">
+  <div class="wrap">
+    <div class="community-grid">
+      <div class="reveal">
+        <div class="eyebrow">Low Tide Crew</div>
+        <h2>You don't have to sit with this alone</h2>
+        <p class="desc">Create an account to save the anchor points that hit hardest, get a monthly note when things feel heavy, and see that the crew grows every week — including the person who started this page.</p>
+        <ul class="perk-list">
+          <li><span class="ico"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l2.5 2.5L10 3" stroke="#8FD6C7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Save the advice that actually lands for you</li>
+          <li><span class="ico"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l2.5 2.5L10 3" stroke="#8FD6C7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>One quiet, no-noise email a month — never a growth-hack newsletter</li>
+          <li><span class="ico"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l2.5 2.5L10 3" stroke="#8FD6C7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Open to everyone — this account system doesn't play favorites, even for the founder</li>
+        </ul>
+      </div>
+
+      <div class="auth-card reveal">
+        <div class="auth-tabs">
+          <button type="button" class="active" data-tab="signin">Sign in</button>
+          <button type="button" data-tab="signup">Create account</button>
+        </div>
+
+        <form id="signinForm" novalidate>
+          <div class="field">
+            <label for="si-email">Email</label>
+            <input type="email" id="si-email" placeholder="you@example.com" required>
+            <div class="field-error">Enter a valid email.</div>
+          </div>
+          <div class="field">
+            <label for="si-pass">Password</label>
+            <input type="password" id="si-pass" placeholder="••••••••" required>
+            <div class="field-error">Password required.</div>
+          </div>
+          <button type="submit" class="auth-submit">Sign in</button>
+          <p class="auth-note">New here? Switch to "Create account" above.</p>
+        </form>
+
+        <form id="signupForm" novalidate style="display:none;">
+          <div class="field">
+            <label for="su-name">Name</label>
+            <input type="text" id="su-name" placeholder="How should we greet you?" required>
+            <div class="field-error">Tell us your name.</div>
+          </div>
+          <div class="field">
+            <label for="su-email">Email</label>
+            <input type="email" id="su-email" placeholder="you@example.com" required>
+            <div class="field-error">Enter a valid email.</div>
+          </div>
+          <div class="field">
+            <label for="su-pass">Password</label>
+            <input type="password" id="su-pass" placeholder="At least 6 characters" required minlength="6">
+            <div class="field-error">Use at least 6 characters.</div>
+          </div>
+          <button type="submit" class="auth-submit">Create account</button>
+          <p class="auth-note">Yes — even the owner of this site signs up right here.</p>
+        </form>
+
+        <div class="auth-status" id="authStatus"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">Low Tide</div>
+        <p class="footer-tag">A quiet corner of the internet for developers who care too much to actually walk away. Built as a small reminder that everyone's tide comes back in.</p>
+      </div>
+      <div class="footer-contact">
+        <span class="footer-owner">Built &amp; kept by David</span>
+        <a href="mailto:davidodhis467@gmail.com">davidodhis467@gmail.com</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Low Tide. All rights reserved.</span>
+      <span>Coastline photograph, personal collection</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // nav background on scroll
+  const nav = document.getElementById('siteNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive:true });
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
       }
+    });
+  }, { threshold: 0.18 });
+  revealEls.forEach(el => io.observe(el));
 
-      h1 {
-        color: blue;
-        font-weight: bold;
-        text-shadow: 0 0 2px, 0 0 2px, 0 0 2px;
-      }
-    </style>
-  </head>
-  <body>
-    <h1><u>My Web Page.</u></h1>
+  // smooth anchor scroll for older browsers already handled via CSS scroll-behavior
 
+  // ---- auth UI (front-end only demo) ----
+  // Note: this is a static site with no server, so accounts live only in this
+  // browser tab's memory for the session. Wire this form up to a real backend
+  // (e.g. Supabase, Firebase Auth) to persist accounts across visits.
+  const OWNER_EMAIL = 'davidodhis467@gmail.com';
+  const sessionUsers = []; // in-memory only, resets on reload — no localStorage used
 
-    <hr>
+  const tabs = document.querySelectorAll('.auth-tabs button');
+  const signinForm = document.getElementById('signinForm');
+  const signupForm = document.getElementById('signupForm');
+  const status = document.getElementById('authStatus');
 
-    <p><i>This webpage is currently under construction and no one is allowed to view nor visit.<br>Though you're allowed to have a glance and <b>rate out of 10.</b> 
-    <br>It is designed for mainly one specific purpose:</i></p>
-    <ul>
-      <li>Monitor and care for the clients.</li>
-      <li>Selectively allow users to the website.</li>
-    </ul>
-    <P>Kindly sign up to unlock beautiful features offered in my website.</P>
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const isSignin = tab.dataset.tab === 'signin';
+      signinForm.style.display = isSignin ? 'block' : 'none';
+      signupForm.style.display = isSignin ? 'none' : 'block';
+      status.classList.remove('show');
+    });
+  });
 
-    <hr>
+  function validate(input) {
+    const field = input.closest('.field');
+    let valid = input.checkValidity();
+    field.classList.toggle('error', !valid);
+    return valid;
+  }
 
-       <form action="#" method="post">
+  function showStatus(message, isOwner) {
+    status.innerHTML = (isOwner ? '<span class="badge">Founder</span> ' : '') + message;
+    status.classList.add('show');
+  }
 
-        <p>
-      <label for="fullname">Full name:</label><br><br>
-      <input type="text" id="fullname" name="fullname" required>
-        </p>
+  signupForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('su-name');
+    const email = document.getElementById('su-email');
+    const pass = document.getElementById('su-pass');
+    const validName = validate(name);
+    const validEmail = validate(email);
+    const validPass = validate(pass);
+    if (!validName || !validEmail || !validPass) return;
 
-    <p>
-      <label for="email">Email Address:</label><br><br>
-      <input type="email" id="email" name="email" required>
-    </p>
+    sessionUsers.push({ name: name.value.trim(), email: email.value.trim() });
+    const isOwner = email.value.trim().toLowerCase() === OWNER_EMAIL;
+    showStatus(`Welcome aboard, ${name.value.trim()}. You're in for this session.`, isOwner);
+    signupForm.reset();
+  });
 
-    <p>
-      <label for="password">Password:</label><br><br>
-      <input type="password" id="password" name="password" required>
-    </p>
-    
-    <p>
-     <label>Gender:</label><br><br>
-     <input type="radio" name="male" value="male">Male
-     <input type="radio" name="female" value="female">Female
-     <input type="radio" name="other" value="other">Other
-    </p>
+  signinForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('si-email');
+    const pass = document.getElementById('si-pass');
+    const validEmail = validate(email);
+    const validPass = validate(pass);
+    if (!validEmail || !validPass) return;
 
-    <p>
-      <label for="ethnic Group">Choose your ethnic group:</label><br><br>
-      <select id="ethnic group" name="ethnic group">
-        <option value="#">**Choose Your Ethnic Group**</option>
-        <option value="1">LUO</option>
-        <option value="2">KAMBA</option>
-        <option value="3">KIKUYU</option>
-        <option value="4">KALENJIN</option>
-        <option value="5">GIRIAMA</option>
-        <option value="6">LUHYA</option>
-        <option value="7">TAITA</option>
-        <option value="8">MAASAI</option>
-        <option value="9">SWAHILI</option>
-        <option value="10">DIGO</option>
-      </select>
-    </p>
+    const isOwner = email.value.trim().toLowerCase() === OWNER_EMAIL;
+    showStatus(`Signed in as ${email.value.trim()}.`, isOwner);
+    signinForm.reset();
+  });
+</script>
 
-    <P>
-      <input type="submit" value="Submit">
-    </P>
-    </form>
-  </body>
+</body>
 </html>
